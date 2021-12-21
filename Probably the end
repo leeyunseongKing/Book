@@ -1,0 +1,529 @@
+#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_OBSOLETE_NO_WARNINGS
+#include<stdio.h>
+#include<string.h>
+#include <Windows.h>
+#include <stdlib.h>
+
+// 멥의 색깔 넣기
+void drw(int bgColor, int textColor) {
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), bgColor * 16 + textColor);
+}
+enum colorName {
+	BLACK,
+	D_BLUE,
+	D_GREEN,
+	D_SKYBLUE,
+	D_RED,
+	D_VIOLET,
+	D_YELLOW,
+	GRAY,
+	D_GRAY,
+	BLUE,
+	GREEN,
+	SKYBLUE,
+	RED,
+	VIOLET,
+	YELLOW,
+	WHITE,
+};
+
+void CursorView(char show) {
+	HANDLE hConsole;
+	CONSOLE_CURSOR_INFO ConsoleCursor;
+
+	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	ConsoleCursor.bVisible = show;
+	ConsoleCursor.dwSize = 1;
+
+	SetConsoleCursorInfo(hConsole, &ConsoleCursor);
+}
+
+typedef struct Books {
+	char name[30]; // 이름
+	char publ[30]; // 출판사
+	int amount; // 수량
+	int remain; // 남은 책
+	int Address; // 책이 꽃혀있는 위치
+} Books; // Books 타입을 만듬
+
+typedef Books* Bookpointer;// Bookpointer 포인터 
+
+typedef struct Student {
+	char name[30]; // 이름
+	int Amount; // 빌릴수 있는양
+} Student; // Student 포인터
+
+		// 학생 정보 받기
+void studentput(Student* student, int num0) {
+	printf("학생 이름 : ");
+	gets(student[num0].name);
+	printf("학생이 빌릴 수있는 책의 수 : 4");
+	student[num0].Amount = 4;
+}
+// 책들의 정보 받기
+void Register(Books Book[], int num) {
+
+	printf("책 제목 : ");
+	gets(Book[num].name);
+	printf("책 저작자 : ");
+	gets(Book[num].publ);
+	printf("책이 꽃혀 있는 위치 : ");
+	scanf("%d", &Book[num].Address);
+	printf("들어온 책 수 : ");
+	scanf("%d", &Book[num].amount);
+
+	Book[num].remain = Book[num].amount; // 초기 수량은 남은 책 수 와 같다.
+
+	// close
+}
+
+// 책 위치 찾기
+void BookFind(Books Book[], int num) {
+	int i = 0;
+	char Title[30] = { 0, };
+	int check = 0, check2 = 0;
+	int place[100][100] = { {0,0,0,0,0,0,0,0,0,1}, // 9,0 ~ 9, 18
+							{0,1,1,1,1,1,1,1,0,1}, // 1,1 ~ 1,8 (900)
+							{0,1,1,1,1,1,1,1,0,1}, // 2,1 ~ 2,8 (800)
+							{0,0,0,0,0,0,0,0,0,1},
+							{0,1,1,1,1,1,1,1,0,1}, // 4,1 ~ 4,8 ()
+							{0,1,1,1,1,1,1,1,0,1}, // 5,1 ~ 5,8 ()
+							{0,0,0,0,0,0,0,0,0,1},
+							{0,1,1,1,1,1,1,1,0,1}, // 7,1 ~ 7,8 ()
+							{0,1,1,1,1,1,1,1,0,1}, // 8,1 ~ 8,8 ()
+							{0,0,0,0,0,0,0,0,0,1},
+							{0,1,1,1,1,1,1,1,0,1}, // 10,1 ~ 10,8
+							{0,1,1,1,1,1,1,1,0,1}, // 11,1 ~ 11,8   
+							{0,0,0,0,0,0,0,0,0,1},
+							{0,1,1,1,1,1,1,1,0,1}, // 13,1 ~ 13,8 
+							{0,1,1,1,1,1,1,1,0,1}, // 14,1 ~ 14,8 
+							{0,0,0,0,0,0,0,0,0,1},
+							{0,1,1,1,1,1,1,1,0,1}, // 16,1 ~ 16,8 (300)
+							{0,1,1,1,1,1,1,1,0,1}, // 17,1 ~ 17,8 (100 ~ 200)
+							{0,0,0,0,0,0,0,0,0,1} };
+	printf("책 제목 : ");
+	gets(Title);
+	// 위치 선정
+	for (i = 0; i < num; i++)
+	{
+		if (strcmp(Title, Book[i].name) == 0) {
+			check2++;
+			if (Book[i].Address >= 900) { // 역사
+				for (int a = 1; a < 8; a++) {
+					place[1][a]++;
+				}
+			}
+			else if (Book[i].Address >= 860) {
+				for (int a = 1; a < 8; a++) {
+					place[2][a]++;
+				}
+			}
+			else if (Book[i].Address >= 840) {
+				for (int a = 1; a < 8; a++) {
+					place[4][a]++;
+				}
+			}
+			else if (Book[i].Address >= 826) {
+				for (int a = 1; a < 8; a++) {
+					place[5][a]++;
+				}
+			}
+			else if (Book[i].Address >= 813) {
+				for (int a = 1; a < 8; a++) {
+					place[7][a]++;
+				}
+			}
+			else if (Book[i].Address >= 800) {
+				for (int a = 1; a < 8; a++) {
+					place[8][a]++;
+				}
+			}
+			else if (Book[i].Address >= 550) {
+				if (Book[i].Address > 700) {
+					for (int a = 1; a < 4; a++) {
+						place[10][a];
+					}
+				}
+				else if (Book[i].Address > 600) {
+					for (int a = 4; a < 8; a++) {
+						place[10][a];
+					}
+				}
+				else if (Book[i].Address > 550) {
+					for (int a = 1; a < 8; a++) {
+						place[11][a];
+					}
+				}
+			}
+			else if (Book[i].Address >= 500) { // 기술과학
+				for (int a = 1; a < 8; a++) {
+					place[13][a]++;
+				}
+			}
+			else if (Book[i].Address >= 400) { // 순수 과학
+				for (int a = 1; a < 8; a++) {
+					place[14][a]++;
+				}
+			}
+			else if (Book[i].Address >= 300) { // 사회과학
+				for (int a = 1; a < 8; a++) {
+					place[16][a]++;
+				}
+			}
+			else if (Book[i].Address >= 100) { // 철학, 종교
+				if (Book[i].Address >= 200) {
+					for (int a = 6; a < 8; a++) {
+						place[17][a]++;
+					}
+				}
+				else {
+					for (int b = 1; b < 6; b++) {
+						place[17][b]++;
+					}
+				}
+			}
+			else if (Book[i].Address >= 0 && Book[i].Address < 100) // 전공도서
+			{
+				for (int a = 0; a < 19; a++)
+				{
+					place[a][9]++;
+				}
+			}
+			else {
+				printf("\n책의 주소가 잘못 되었 습니다.\n\n");
+				check++;
+			}
+			printf("%d\n\n", Book[i].Address);
+		}
+	}
+
+	if (check2 == 0) {
+		printf("\n책이 존재하지 않습니다.\n\n");
+	}
+	else if (check == 0 || check2 != 0) { // 책의 주소가 잘못되었는데 굳이 도면을 띠울 필요가 없다.
+		for (int y = 0; y < 19; y++) {
+			for (int x = 0; x < 10; x++) {
+				if (place[y][x] == 0) {
+					drw(GRAY, GRAY);
+					printf("%d ", place[y][x]);
+				}
+				else if (place[y][x] == 1) {
+					drw(WHITE, WHITE);
+					printf("%d ", place[y][x]);
+				}
+				else if (place[y][x] == 2) {
+					drw(RED, RED);
+					printf("%d ", place[y][x]);
+				}
+			}
+			printf("\n");
+		}
+		printf("\n\n");
+		drw(BLACK, WHITE);
+	}
+}
+
+// 마지막에 나오는 것 (클릭하면 반응 하는걸로 바꾸기)
+void printFinish() {
+	char Finish[100] = { 0, };
+	printf("\n\n");
+	printf("===================================================\n");
+	printf("============한번더 누르시면 종료됩니다.============\n");
+	printf("===================================================\n");
+
+	gets(Finish);
+}
+
+int virtual_information2 = 0;
+// 책 대출하기
+int mi = 0;
+void Lending(Books Book[], int num) {
+	int Existence = num; // 책의 제목이 존재 하는가 안하는 가를 판별 하기 위한것
+	char Title[30] = { 0, };
+	printf("책 제목 : ");
+	gets(Title);
+	printf("\n");
+	virtual_information2 = 0;
+	if (mi > 0){
+		for (int i = 0; i <= num; i++)
+		{
+			if (strcmp(Title, Book[i].name) == 0)
+			{
+				if (Book[i].remain == 0) {
+					printf("\n책이 전부 나갔습니다.\n\n");
+					_sleep(3000);
+
+				}
+				else {
+					printf("\n2주가 넘으면 연체 됩니다.\n\n");
+					Book[i].remain--;
+					Existence--;
+					virtual_information2 = 1;
+					_sleep(3000);
+				}
+			}
+		}
+		if (Existence == num)
+		{
+			printf("\n책이 존재하지 않습니다.\n\n");
+			_sleep(3000);
+		}
+	}
+	mi++;
+	system("cls");
+}
+int virtual_information1 = 0;
+
+// 책 반납하기
+void Return(Books Book[], int num) {
+	int Existence = num; // 책의 제목이 존재 하는가 안하는 가를 판별 하기 위한것
+	char Title[30] = { 0, };
+	printf("책 제목 : ");
+	gets(Title);
+	printf("\n");
+	virtual_information1 = 0;
+	for (int i = 0; i <= num; i++) {
+		if (strcmp(Title, Book[i].name) == 0) {
+			if (Book[i].amount != Book[i].remain) { // 처음 들어온 양보다 남은 양은 더 커질 수 없다. 
+				printf("책이 반납되었습니다.\n\n");
+				Book[i].remain++;
+				Existence--;
+				virtual_information1 = 1;
+				_sleep(3000);
+			}
+			else {
+				printf("다시해 주세요.\n\n");
+				Existence--;
+				_sleep(3000);
+			}
+		}
+	}
+	system("cls");
+}
+// 설명서
+void manual() {
+	printf("*================================================================*\n");
+	printf("|                         사용법                                 |\n");
+	printf("*================================================================*\n");
+	printf("|                                                                |\n");
+	printf("|   1. 학생으로 로그인해야 사용이 가능합니다.                    |\n");
+	printf("|   2. 로그인 방법은 \"무엇을 할것이가요\" 뒤에 이름을 쓰면 됩니다 |\n");
+	printf("|   3. \"책 등록하기\"를 입력하면 책을 등록할 수 있습니다          |\n");
+	printf("|   4. \"학생 등록하기\"를 입력하면 학생을 등록할 수 있습니다      |\n");
+	printf("|   5. 학생으로 로그인시 안에서 하고 싶은 것을 입력하면 된다     |\n");
+	printf("|   6. 다음으로 넘어갈때 몇초후 넘어가는 부분에                  |\n");
+	printf("|      글이나 엔터를 치면 다음 부분이 먹어 버린다.               |\n");
+	printf("|   7. \"end\"키를 누를 시 프로그램이 종료된다.                    |\n");
+	printf("|                                                                |\n");
+	printf("*================================================================*\n");	  // 설명서
+}
+// 책 정보의 수
+int BookLine() {
+	FILE* f;
+	int line = 0;
+	char c;
+	f = fopen("book.txt", "r+");
+	while ((c = fgetc(f)) != EOF)
+		if (c == '\n') line++;
+	fclose(f);
+	return(line);
+}
+
+// 사람 정보의 수
+int PeopleLine() {
+	FILE* f;
+	int line = 0;
+	char c;
+	f = fopen("people.txt", "r+");
+	while ((c = fgetc(f)) != EOF)
+		if (c == '\n') line++;
+	fclose(f);
+	return(line);
+}
+
+// 텍스트 파일 초기화 시키기
+void BookReset() {
+	FILE* pFile = NULL;
+	pFile = fopen("book.txt", "w+");
+	if (pFile == NULL) {
+		//에러 처리
+	}
+	else {
+		(ftell(pFile));			//fopen 후 파일 포인터 위치 확인
+		fputs("0", pFile);
+		(ftell(pFile));			//fputs 후 파일 포인터 위치 확인
+		rewind(pFile);
+		(ftell(pFile));			//rewind 후 파일 포인터 위치 확인
+		fclose(pFile);
+	}
+}
+void PeopleReset() {
+	FILE* pFile = NULL;
+	pFile = fopen("people.txt", "w+");
+	if (pFile == NULL) {
+		//에러 처리
+	}
+	else {
+		(ftell(pFile));			//fopen 후 파일 포인터 위치 확인
+		fputs("0", pFile);
+		(ftell(pFile));			//fputs 후 파일 포인터 위치 확인
+		rewind(pFile);
+		(ftell(pFile));			//rewind 후 파일 포인터 위치 확인
+		fclose(pFile);
+	}
+}
+/*	초기화 하는 이유 :
+	책을 삭재만 하고 프로그래을 끄면 덮어 씨우기를 해도 뒤에 찌거기가 남을 수 있다.
+*/
+
+int main() {
+	CursorView(0);
+	struct Student student[1000];
+	struct Books Book[1000];
+	int num = 0; // 책 수
+	int num0 = 0; // 사람 수
+	char Finish[100];
+	char What[100] = { 0, };
+	char something[30];
+	int bookline = 0;
+	int peopleline = 0;
+
+	bookline = BookLine();
+	peopleline = PeopleLine();
+	num = bookline + 1;
+	num0 = peopleline + 1;
+
+	// 파일
+	FILE* fp1;
+	FILE* fp2;
+	fp1 = fopen("book.txt", "r+");
+	fp2 = fopen("people.txt", "r+");
+	// 책 정보 불러오기
+	for (int i = 0; i <= bookline; i++) {
+		fscanf(fp1, "%s %s %d %d %d", &Book[i].name, &Book[i].publ, &Book[i].amount, &Book[i].remain, &Book[i].Address);
+	}
+	// 사람 정보 불러오기
+	for (int i = 0; i <= peopleline; i++) {
+		fscanf(fp2, "%s %d", &student[i].name, &student[i].Amount);
+	}
+	fclose(fp1);
+	fclose(fp2);
+	while (1) {
+		strcpy(something, "");
+		manual();
+		printf("\n무엇을 할 것인가요 : ");
+		gets(something);
+		if (strcmp(something, "end") == 0) {
+			// 정보 리셋 시키기
+			BookReset();
+			PeopleReset();
+			// new 정보 저장하기
+			fp1 = fopen("book.txt", "w");
+			fp2 = fopen("people.txt", "w");
+
+			for (int i = 0; i < num; i++) {
+				fprintf(fp1, "%s %s %d %d %d", &Book[i].name, &Book[i].publ, Book[i].amount, Book[i].remain, Book[i].Address);
+				if (i != num - 1) {
+					fprintf(fp1, "\n");
+				}
+			}
+			for (int i = 0; i < num0; i++) {
+				fprintf(fp2, "%s %d", &student[i].name, student[i].Amount);
+				if (i != num0 - 1) {
+					fprintf(fp2, "\n");
+				}
+			}
+			fclose(fp1);
+			fclose(fp2);
+			return 0;
+		}
+		if (strcmp(something, "책 등록하기") == 0) {
+			system("cls");
+			printf("\n==================  책 등록하기  ==================\n\n");
+			Register(Book, num);
+			num++;
+			printFinish();
+		}
+
+		if (strcmp(something, "학생 등록하기") == 0) {
+			system("cls");
+			printf("\n==================  학생 등록하기  =================\n\n");
+			studentput(student, num0);
+			num0++;
+			printFinish();
+		}
+
+		for (int p = 0; p < num0; p++) {
+			if (strcmp(something, student[p].name) == 0) {
+				strcpy(What, "");
+				printf("\n책 찾기 = 1, 책 대출하기 = 2, 책 반납하기 3\n\n");
+				printf("	무엇을 할것 인가요 : ");
+				gets(What);
+				printf("\n");
+
+				// 책 찾기
+				if (strcmp(What, "1") == 0) {
+					system("cls");
+					printf("\n==================    책 찾기    ==================\n\n");
+					BookFind(Book, num);
+					printFinish();
+				}
+				// 책 대출하기
+				if (strcmp(What, "2") == 0) {
+					system("cls");
+					int howmany = 0;
+					printf("몇권을 대출할 것인가요 : ");
+					scanf("%d", &howmany);
+					if (student[p].Amount < howmany) {
+						howmany = student[p].Amount;
+					}
+					for (int how= 0; how <= howmany; how++){
+						if (student[p].Amount > 0) { // 학생이 책을 4권 이상 빌릴 수 없다. 
+							printf("\n==================  책 대출하기  ==================\n\n");
+							Lending(Book, num);
+							if (virtual_information2 == 1) {
+								student[p].Amount--;
+							}
+						}
+						else {
+							printf("\n당신은 책을 빌릴 수 없습니다,\n\n");
+							system("cls");
+						}
+					}
+					manual();
+					printFinish();
+				}
+				// 책 반낲하기
+				if (strcmp(What, "3") == 0) {
+					if (student[p].Amount < 4) {
+						system("cls");
+						printf("\n\n==================  책 반납하기  ==================\n\n");
+						int howmany = 0;
+						printf("몇권을 반납할 것인가요 : ");
+						scanf("%d", &howmany);
+						if (4 - student[p].Amount < howmany) {
+							howmany = student[p].Amount;
+						}
+						for (int how = 0; how <= howmany; how++) {
+							
+							printf("\n\n==================  책 반납하기  ==================\n\n");
+							Return(Book, num);
+							
+							if (virtual_information1 == 1){
+								student[p].Amount++;
+							}
+							system("cls");
+						}
+						manual();
+						printFinish();
+					}
+
+				}// 책 반납하기
+			}
+		}
+		system("cls");
+	}
+	return 0;
+}
